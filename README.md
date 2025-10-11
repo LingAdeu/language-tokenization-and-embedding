@@ -1,2 +1,30 @@
-# language-tokenization-and-embedding
-LLM splits up texts into tokens before converting them to vector embeddings. This repo explains different tokenization strategies prior to embedding conversion.
+![header](header.png)
+
+# **Language Tokenization Strategies and Embedding Vector Conversions**
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1AvK7xT9Y9EJD45A6XF-TfaJPfAVZKv_Y?usp=sharing)
+
+## **Summary**
+Language models, both traditional vs modern and small vs large, always split up a collection of texts into tokens (small, manageable chunks of texts) before they are converted to a list of numerical values, namely vector. This repository is intended to document my personal journey of learning different tokenization strategies from traditional text split by white space to byte level split. In addition to tokenization strategies, this repository also covers the extent to which I understand embedding vectors, starting from the sparsity problem with traditional vectorization techniques, particularly one-hot encoding, to contextual embeddings which already become the common practice in today's NLP applications in LLMs. 
+
+## **1 One-Hot Encoding**
+One-hot encoding is a common technique in traditional NLP by converting tokens into vectors so that machine learning algorithms can model the patterns (e.g., negative sentiment characterized by the presence of a specific set of tokens associated with less desirable qualities or negative perceptions). While this tokenization technique is useful, this technique introduces the sparsity problem. One-hot encoding basically converts a token into either 1 for present and 0 for absent in a document. This eiher 1 or 0 is where the sparsity happens. Sparsity occurs when a matrix which represents documents by rows and features (tokens) by columns contains a large number of zeros. When a matrix is largely populated by zeros, computation memory will be wasted to process the absence of a token. 
+
+<img src="img/one-hot-encoding.png" alt="one-hot encoding" width="400"/>
+
+**Image 1**: A dataframe of one-hot encoded sentence. Let us assume this is a matrix of one-hot encoded sentence.
+
+As shown, sentence, "Colorless green ideas sleep furiously.", is represented by the presence or absence of the word by 1 (present) and 0 (absent). This encoding can lead to vocabulary explosion in morphologically rich languages like Indonesian. Each variant will be treated as a separate column in matrix, increasing dimensionality and sparsity at the same time. This will be a worse problem when the dataset is a set of samples from social media where users use a wide variety of spellings. The dimensionality and sparsity can even be more problematic. Moreover, as this simple tokenization and vectorization (categorical to numerical values) on the absence or presence of a token, the encoding does not include semantic information too, making us telling token *ideas* and *concepts* are semantically similar become impossible. The limitation on semanticity of tokens does not enable meaning-related NLP tasks such as document clustering by meaning, semantic search, and keyphrase extraction theoretically less possible.
+
+
+## **2 Static Dense Embeddings**
+Static embeddings such as GloVe, Word2Vec, and fastText can resolve the semantic problems in one-hot encoding by instead of representing tokens with either 1 or 1, they use dense vectors, i.e., compact numerical representations which involves non-zero floating points, containing both semantic and syntactic information of the tokens. But it is worth to note that unlike one-hot encoding which directly makes sense to humans, dense embeddings do not since they encode meanings geometrically, not linguistically. 
+
+<img src="img/glove-embeddings.png" alt="static embeddings" width="400"/>
+
+**Image 2**: Each token is represented in a long vector containing numbers with floating points.
+
+While static embeddings can solve the semantic problem in one-hot encoding (as well as frequency-based encoding such as term frequency and term frequency-inverse document frequency), static embeddings treat the same tokens the same regardless their syntactic positions. For example, the vector representing token *sleep* as verb as in sentence, "Colorless green ideas sleep furiously.", will be the same as to the same token as in "I sleep at night.". This happens because the values in static embeddings remains the same regardless the context, especially related to in what position the token *sleep* is used and what relation it bears with other tokens in the same sentence.
+
+## **3 Contextual Dense Embeddings**
+
