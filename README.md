@@ -26,5 +26,25 @@ Static embeddings such as GloVe, Word2Vec, and fastText can resolve the semantic
 
 While static embeddings can solve the semantic problem in one-hot encoding (as well as frequency-based encoding such as term frequency and term frequency-inverse document frequency), static embeddings treat the same tokens the same regardless their syntactic positions. For example, the vector representing token *sleep* as verb as in sentence, "Colorless green ideas sleep furiously.", will be the same as to the same token as in "I sleep at night.". This happens because the values in static embeddings remains the same regardless the context, especially related to in what position the token *sleep* is used and what relation it bears with other tokens in the same sentence.
 
-## **3 Contextual Dense Embeddings**
+To check if the same words in different uses have the same embedding vectors, we can both compare the embedding vectors of both tokens side by side. Alternatively, it is also possible to use cosine similarity to examine the semantic similarity between the vectors. If the value is closer to 1, both vectors share similar semantic information.
 
+**Step 1**: Calculate the dot product between vector A (from token *sleep* in sentence A, $A=[a_1, a_2, a_3, ... a_n]$) and B (from the same token in sentence B, $B=[b_1, b_2, b_3 ..., b_n]$). Dot product seeks to measure similarity between vectors in terms of directions (positive for same direction, negative for opposite direction). It works by multiplying each component (e.g., $a_i \times b_i$) and then summing them up.
+$$
+\begin{align}
+A\cdot B &=\sum_i A_i \times B_i = 0.846890^2 + 0.588220^2 + (-0.617240)^2 + \: ... \: + (-0.115990)^2 = 1.7331
+\end{align}
+$$
+
+**Step 2**: Compute the magnitude (norm, $||A||$ and $||B||$). Norm or magnitude denotes the length of a vector in $n$-dimensional space. It is called normalization because it uses the Euclidean normalization (L2 norm) formula where $||A||=\sqrt{a_1^2, a_2^2, a_3^2 + ... + a_n^2}$. 
+$$
+\begin{align}
+||A|| &=\sqrt{\sum_i A_i^2}=\sqrt{1.7331} = 1.3165\\
+||B|| &=\sqrt{\sum_i B_i^2} = \sqrt{1.7331}= 1.3165
+\end{align}
+$$
+
+**Step 3**: Calculate cosine similarity. Cosine similarity is the angle between two vectors, computed by dividing the dot product (similarity in direction and magnitude) by the product of norms. The division is done to remove the effect of vector length so the directional similarity can be defined. In its output interpretation, 1.0 ($\theta=0 \degree$) means identical direction and therefore highly similar meaning while -1.0 ($\theta=180\degree$) means opposite meaning. Value 0.0 ($\theta=90\degree$) also possible, meaning completely unrelated.
+$$\text{Cosine Similarity}=\frac{A \cdot B}{||A|| \cdot ||B||} = \frac{1.7331}{1.3165 \times 1.3165} =\frac{1.7331}{1.7331}=1.00$$
+
+## **3 Contextual Dense Embeddings**
+On the contrary to static embeddings, contextual embeddings such as BERT and RoBERTa will encode both semantic and syntactic information as well. The embedding vectors even for eactcly the same word with the same word class (e.g., *sleep* (verb) in sentence 1 vs *sleep* (verb) in sentence 2) will be different.

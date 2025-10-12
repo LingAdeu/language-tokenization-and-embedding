@@ -34,6 +34,8 @@ ul.task-list li input[type="checkbox"] {
 <link href="README_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="README_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
@@ -70,10 +72,29 @@ ul.task-list li input[type="checkbox"] {
 <p><strong>Image 1</strong>: A dataframe of one-hot encoded sentence. Let us assume this is a matrix of one-hot encoded sentence.</p>
 <p>As shown, sentence, “Colorless green ideas sleep furiously.”, is represented by the presence or absence of the word by 1 (present) and 0 (absent). This encoding can lead to vocabulary explosion in morphologically rich languages like Indonesian. Each variant will be treated as a separate column in matrix, increasing dimensionality and sparsity at the same time. This will be a worse problem when the dataset is a set of samples from social media where users use a wide variety of spellings. The dimensionality and sparsity can even be more problematic. Moreover, as this simple tokenization and vectorization (categorical to numerical values) on the absence or presence of a token, the encoding does not include semantic information too, making us telling token <em>ideas</em> and <em>concepts</em> are semantically similar become impossible. The limitation on semanticity of tokens does not enable meaning-related NLP tasks such as document clustering by meaning, semantic search, and keyphrase extraction theoretically less possible.</p>
 </section>
-<section id="static-embeddings" class="level2">
-<h2 class="anchored" data-anchor-id="static-embeddings"><strong>2 Static Embeddings</strong></h2>
-<p>Static embeddings such as GloVe, Word2Vec, and fastText can resolve the semantic problems in one-hot encoding by instead of representing tokens with either 1 or 1, they use dense vectors, i.e., compact numerical representations which involves non-zero floating points, containing both semantic and syntactic information of the tokens.</p>
+<section id="static-dense-embeddings" class="level2">
+<h2 class="anchored" data-anchor-id="static-dense-embeddings"><strong>2 Static Dense Embeddings</strong></h2>
+<p>Static embeddings such as GloVe, Word2Vec, and fastText can resolve the semantic problems in one-hot encoding by instead of representing tokens with either 1 or 1, they use dense vectors, i.e., compact numerical representations which involves non-zero floating points, containing both semantic and syntactic information of the tokens. But it is worth to note that unlike one-hot encoding which directly makes sense to humans, dense embeddings do not since they encode meanings geometrically, not linguistically.</p>
 <p><img src="img/glove-embeddings.png" alt="static embeddings" width="400"></p>
+<p><strong>Image 2</strong>: Each token is represented in a long vector containing numbers with floating points.</p>
+<p>While static embeddings can solve the semantic problem in one-hot encoding (as well as frequency-based encoding such as term frequency and term frequency-inverse document frequency), static embeddings treat the same tokens the same regardless their syntactic positions. For example, the vector representing token <em>sleep</em> as verb as in sentence, “Colorless green ideas sleep furiously.”, will be the same as to the same token as in “I sleep at night.”. This happens because the values in static embeddings remains the same regardless the context, especially related to in what position the token <em>sleep</em> is used and what relation it bears with other tokens in the same sentence.</p>
+<p>To check if the same words in different uses have the same embedding vectors, we can both compare the embedding vectors of both tokens side by side. Alternatively, it is also possible to use cosine similarity to examine the semantic similarity between the vectors. If the value is closer to 1, both vectors share similar semantic information.</p>
+<p><strong>Step 1</strong>: Calculate the dot product between vector A (from token <em>sleep</em> in sentence A, <span class="math inline">\(A=[a_1, a_2, a_3, ... a_n]\)</span>) and B (from the same token in sentence B, <span class="math inline">\(B=[b_1, b_2, b_3 ..., b_n]\)</span>). Dot product seeks to measure similarity between vectors in terms of directions (positive for same direction, negative for opposite direction). It works by multiplying each component (e.g., <span class="math inline">\(a_i \times b_i\)</span>) and then summing them up. <span class="math display">\[
+\begin{align}
+A\cdot B &amp;=\sum_i A_i \times B_i = 0.846890^2 + 0.588220^2 + (-0.617240)^2 + \: ... \: + (-0.115990)^2 = 1.7331
+\end{align}
+\]</span></p>
+<p><strong>Step 2</strong>: Compute the magnitude (norm, <span class="math inline">\(||A||\)</span> and <span class="math inline">\(||B||\)</span>). Norm or magnitude denotes the length of a vector in <span class="math inline">\(n\)</span>-dimensional space. It is called normalization because it uses the Euclidean normalization (L2 norm) formula where <span class="math inline">\(||A||=\sqrt{a_1^2, a_2^2, a_3^2 + ... + a_n^2}\)</span>. <span class="math display">\[
+\begin{align}
+||A|| &amp;=\sqrt{\sum_i A_i^2}=\sqrt{1.7331} = 1.3165\\
+||B|| &amp;=\sqrt{\sum_i B_i^2} = \sqrt{1.7331}= 1.3165
+\end{align}
+\]</span></p>
+<p><strong>Step 3</strong>: Calculate cosine similarity. Cosine similarity is the angle between two vectors, computed by dividing the dot product (similarity in direction and magnitude) by the product of norms. The division is done to remove the effect of vector length so the directional similarity can be defined. In its output interpretation, 1.0 (<span class="math inline">\(\theta=0 \degree\)</span>) means identical direction and therefore highly similar meaning while -1.0 (<span class="math inline">\(\theta=180\degree\)</span>) means opposite meaning. Value 0.0 (<span class="math inline">\(\theta=90\degree\)</span>) also possible, meaning completely unrelated. <span class="math display">\[\text{Cosine Similarity}=\frac{A \cdot B}{||A|| \cdot ||B||} = \frac{1.7331}{1.3165 \times 1.3165} =\frac{1.7331}{1.7331}=1.00\]</span></p>
+</section>
+<section id="contextual-dense-embeddings" class="level2">
+<h2 class="anchored" data-anchor-id="contextual-dense-embeddings"><strong>3 Contextual Dense Embeddings</strong></h2>
+<p>On the contrary to static embeddings, contextual embeddings such as BERT and RoBERTa will encode both semantic and syntactic information as well. The embedding vectors even for eactcly the same word with the same word class (e.g., <em>sleep</em> (verb) in sentence 1 vs <em>sleep</em> (verb) in sentence 2) will be different.</p>
 </section>
 </section>
 
