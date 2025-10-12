@@ -34,20 +34,21 @@ A\cdot B &=\sum_i A_i \times B_i = 0.846890^2 + 0.588220^2 + (-0.617240)^2 + \: 
 \end{align}
 $$
 
-**Step 2**: Compute the magnitude (norm, $||A||$ and $||B||$). Norm or magnitude denotes the length of a vector in $n$-dimensional space. It is called normalization because it uses the Euclidean normalization (L2 norm) formula where $||A||=\sqrt{a_1^2, a_2^2, a_3^2 + ... + a_n^2}$. 
+**Step 2**: Compute the magnitude (norm, $||A||$ and $||B||$). Norm or magnitude denotes the length of a vector in $n$-dimensional space. It is called normalization because it uses the Euclidean normalization (L2 norm) formula where $\|A\|=\sqrt{a_1^2, a_2^2, a_3^2 + ... + a_n^2}$. 
 
 $$
 \begin{align}
-||A|| &=\sqrt{\sum_i A_i^2}=\sqrt{1.7331} = 1.3165\\
-||B|| &=\sqrt{\sum_i B_i^2} = \sqrt{1.7331}= 1.3165
+\|A\| &=\sqrt{\sum_i A_i^2}=\sqrt{1.7331} = 1.3165\\
+\|B\| &=\sqrt{\sum_i B_i^2} = \sqrt{1.7331}= 1.3165
 \end{align}
 $$
 
 **Step 3**: Calculate cosine similarity. Cosine similarity is the angle between two vectors, computed by dividing the dot product (similarity in direction and magnitude) by the product of norms. The division is done to remove the effect of vector length so the directional similarity can be defined. In its output interpretation, 1.0 ($\theta=0 \degree$) means identical direction and therefore highly similar meaning while -1.0 ($\theta=180\degree$) means opposite meaning. Value 0.0 ($\theta=90\degree$) also possible, meaning completely unrelated.
 
 $$
-\text{Cosine Similarity}=\frac{A \cdot B}{||A|| \cdot ||B||} = \frac{1.7331}{1.3165 \times 1.3165} =\frac{1.7331}{1.7331}=1.00
+\text{Cosine Similarity}=\frac{A \cdot B}{\|A\|\cdot \|B\|} = \frac{1.7331}{1.3165 \times 1.3165} =\frac{1.7331}{1.7331}=1.00
 $$
+
 
 ## **3 Contextual Dense Embeddings**
 On the contrary to static embeddings, contextual embeddings such as BERT and RoBERTa will encode both semantic and syntactic information as well. The embedding vectors even for eactcly the same word with the same word class (e.g., *sleep* (verb) in sentence 1 vs *sleep* (verb) in sentence 2) will be different.
